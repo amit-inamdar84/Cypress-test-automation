@@ -1,0 +1,30 @@
+{
+  "name": "cypress-learning",
+  "version": "1.0.0",
+  "description": "Cypress udemy course",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amit-inamdar84/Cypress-test-automation.git"
+  },
+  "keywords": [
+    "Cypress",
+    "Automation",
+    "Udemy"
+  ],
+  "author": "Amit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amit-inamdar84/Cypress-test-automation/issues"
+  },
+  "homepage": "https://github.com/amit-inamdar84/Cypress-test-automation#readme",
+  "dependencies": {
+    "cypress": "^7.3.0",
+    "cypress-xpath": "^1.6.2",
+    "prettier": "^2.3.0"
+  }
+}
