@@ -6,6 +6,12 @@ describe('Tests to clear and type input text' , () => {
         cy.log(date);
     })
 
+    it('Another way - should override the current time' , () => {
+        let date = new Date(Date.UTC(2021, 3, 10)).getDate();
+        cy.clock(date);
+        cy.log(date);
+    })
+
     it('Load website', () => {
         cy.visit('http://zero.webappsecurity.com/login.html');
         cy.clearCookies({log:true});

@@ -1,0 +1,188 @@
+Cypress quick course notes:
+Go to the project directory and execute git clone "URL of repo"
+npm install to install dependencies mentioned in package.json
+npm start - This will start the application
+Open new command prompt
+npx cypress open to open cypress test runner.
+
+
+describe.only will execute only this suite
+it.only will execute only this spec.
+Hooks - before (will run once before any tests) and beforeEach (will run once before every test)
+beforeEach can be inserted inside describe. Then it will run once before each test that are inside that describe.
+
+Testing emails:
+https://mailosaur.com/docs/frameworks-and-tools/cypress/
+
+Headless mode:
+npx cypress run --spec ./cypress/integration/18-headless-mode/start.js
+
+
+-------------------------------------------
+Notes from next tutor: https://cognizant.udemy.com/course/automated-testing-with-cypress/learn/lecture/18040081?start=15#overview
+Advantages:
+Smart automatic waiting
+Good documentation
+Video recording
+Real time reloads
+
+How is it different?
+Different from Selenium architecture
+Works on network layer
+Controls all aspects of automation from browser - Any manipulation can be done.
+
+Limitations:
+Only Javascript
+Limited cross browser testing (Supports Chrome, Edge, Electron, Firefox)
+Controls one browser at a time
+Controls ony one tab of a browser
+
+Installation and setup:
+Create a new project root folder
+Open terminal and execute npm init - This will create package.json file
+Enter package.json details in command prompt.
+Package.json file will be created.
+In terminal install cypress using the command: npm install cypress
+
+Prettier setup: (prettier.io)
+npm install prettier
+Create a new file under root folder - .prettierrc
+{
+  "semi": false,
+  "singleQuote": true,
+  "useTabs": true,
+  "tabWidth": 2,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "trailingComma": "es5"
+}
+This file will define coding standards.
+
+Intelligent code completion:
+Run npx cypress open to open cypress test runner.
+Just close the runner and in editor the cypress folder structure will be created. It includes cypress.json file and cypress folder.
+Create new file under cypress folder and name it tsconfig.json
+Paste the following code in the file and restart the editor.
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "baseUrl": "../node_modules",
+      "types": [
+        "cypress"
+      ]
+    },
+    "include": [
+      "**/*.*"
+    ]
+  }
+  
+Add these two commands in package.json:
+   "cy:open": "cypress open",
+    "cy:run" : "cypress run"
+
+Cypress folders purpose:
+fixtures: To store test data.
+integration: To write test scripts
+plugins: To define external plugins
+support: index.js file runs before every spec.
+command.js file is used to define custom commands.
+
+Running cypress test in browser:
+As defined in package.json run the command npm run cy:open which invokes cypress open
+In cypress test runner, click on required test case to run in selected browser.
+
+Running cypress test in headless mode:
+As defined in package.json run the command npm run cy:run which invokes cypress run. This will run all specs
+To run selected spec use: npx cypress run --spec ./cypress/integration/18-headless-mode/start.js
+
+
+cy.visit - has two parameters - string for URL and options for timeout.
+For further notes please refer editor. Start with the file simple.js
+
+Xpaths in cypress:
+Xpath are not required in Cypress as native selectors are available. But still if we need xpath need to install the following plugin.
+npm install cypress-xpath
+Open support\index.js file and insert the code - require('cypress-xpath');
+
+Cypress $ function:
+const element = Cypress.$('#sign_in');
+element.click();
+ 
+Tip:
+cy.url().should('include', 'Test') - include can be used with url or title.
+cy.get('#testid').should('contain', 'Text') - Here instead of include contain should be used. If we use include will get below error:
+Timed out retrying after 4000ms: object tested must be an array, a map, an object, a set, a string, or a weakset, but object given
+
+
+Visual testing is the automated process of detecting and reviewing visual UI changes.
+Visual testing captures snapshot of screens under test. This is called base image/snapshot. Next time when we run the same test case and if there is any change in the snapshot
+either pixel wise or resolution wise or any minute part of image, the test will fail.
+This is also useful to capture image of web table and test it for any changes in records during regression. Looks like this is only for static data. Need to check.
+
+For visual regression testing need to install the following dependency.
+npm install cypress-image-snapshot
+And also add below code to index.js file under plugins folder.
+ const { addMatchImageSnapshotPlugin } = require("cypress-image-snapshot/plugin");
+module.exports = (on, config) => {
+  addMatchImageSnapshotPlugin(on, config);
+}
+Also add below code to commands.js file under the folder support:
+import{ addMatchImageSnapshotCommand } from "cypress-image-snapshot/command"
+
+addMatchImageSnapshotCommand({
+    failureTreshold: 0.0,
+    failureTresholdType: "percent",
+    customDiffConfig: { treshold: 0.0},
+    capture: "viewport"
+})
+
+Cypress.Commands.add('setResolution', size => {
+    if(Cypress._.isArray(size)) {
+        cy.viewport(size[0],size[1]);
+    }
+    else{
+        cy.viewport(size);
+    }
+})
+
+To update base snapshots add the below code in package.json
+"cy:update-snapshots": "cypress run --env updateSnapshots=true"
+For single test case: npx cypress run --spec ./cypress/integration/visualregression/image.js --env updateSnapshots=true
+
+Date and time override feature should be used if application contains date and time.
+
+Images for a test case are not matching between headless run and browser run. Need to find solution for this.
+
+Disabling failing tests:
+For debugging purposes, if we want to mark image comparison failure as pass, we can use below script in package.json.
+"cy:run-tests-with-no-failure": "cypress run --env failOnSnapshotDiff=false";
+
+Overriding matchImageSnapshot:
+If we need to change threshold value for testing purposes, we can call the function with object as an argument:
+cy.get('h1').matchImageSnapshot({
+ failureTreshold: 10.0,
+ failureTresholdType: "pixels"
+});
+
+
+Percy:
+Integration: Create an account in percy website.
+Login and create a new project.
+Copy the project token and run the command in your terminal in project root folder:
+set PERCY_TOKEN=ff032b66771be296164b2ff26953286fb51935d3c66bcdbd08977304198c4b72
+Open package.json
+In the terminal install percy using command: npm install @percy/cypress
+The percy dependency - @percy/cypress, should display in package.json
+Add import '@percy/cypress' to command.js file. This will provide access to percy snapshot command.
+Now in index.js file under plugin folder add below code:
+const percyHealthCheck = require("@percy/cypress");
+module.exports = (on, config) => {
+  addMatchImageSnapshotPlugin(on, config);
+  on('task',percyHealthCheck);
+}
+
+
+
+ 
+ 
+

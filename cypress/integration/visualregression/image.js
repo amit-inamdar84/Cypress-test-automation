@@ -13,3 +13,10 @@ describe('Tests to demo iteration over multiple web pages and devices', () => {
     })
     
 })
+
+describe('Test for single element snapshot', () => {
+    it('should take snapshot for single element', () => {
+        cy.visit('http://example.com/');
+        cy.get('h1').matchImageSnapshot();
+    })
+})
