@@ -1,5 +1,4 @@
 import{ addMatchImageSnapshotCommand } from "cypress-image-snapshot/command"
-import '@percy/cypress'
 
 
 Cypress.Commands.add('login',(username , password) => {

@@ -14,6 +14,8 @@ describe('Data table visual test', () => {
 
    it('should load account activity and take snapshot', () => {
        cy.get('#account_activity_tab').click();
-       cy.matchImageSnapshot();
+       cy.wait(3000);
+       //cy.matchImageSnapshot();
+       cy.percySnapshot();
    })
 })

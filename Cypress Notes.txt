@@ -169,17 +169,52 @@ Percy:
 Integration: Create an account in percy website.
 Login and create a new project.
 Copy the project token and run the command in your terminal in project root folder:
-set PERCY_TOKEN=ff032b66771be296164b2ff26953286fb51935d3c66bcdbd08977304198c4b72
+$env:PERCY_TOKEN = "ff032b66771be296164b2ff26953286fb51935d3c66bcdbd08977304198c4b72"
 Open package.json
-In the terminal install percy using command: npm install @percy/cypress
-The percy dependency - @percy/cypress, should display in package.json
-Add import '@percy/cypress' to command.js file. This will provide access to percy snapshot command.
-Now in index.js file under plugin folder add below code:
-const percyHealthCheck = require("@percy/cypress");
+In the terminal install percy and percy CLI using command: 
+npm install @percy/cypress
+npm install @percy/cli
+The percy dependency - @percy/cypress and @percy/cli, should display in package.json
+Add import '@percy/cypress' to index.js file under support folder. This will provide access to percy snapshot command.
+In the test case use cy.percySnapshot() method to send snapshots to percy.
+Run below command run to run all test cases:
+percy exec -- cypress
+For single spec use the command:
+npx percy exec -- cypress run --spec ./cypress/integration/visualregression/percyVisualTest.js
+Check for builds in percy app for image comparison.
+
+Cucumber BDD:
+npm install cypress-cucumber-preprocessor
+In cypress.json file add this configuration - 
+"ignoreTestFiles":["*.js", "*.md"],
+"testFiles": "**/*.feature"
+
+In cypress/plugins/index.js file, add the below code:
+const cucumber = require('cypress-cucumber-preprocessor').default
+
 module.exports = (on, config) => {
-  addMatchImageSnapshotPlugin(on, config);
-  on('task',percyHealthCheck);
+  on('file:preprocessor', cucumber())
 }
+
+Cucumber has 3 files: Feature file, Step definition file and Page object
+We can pass parameters in feature file and accept them as arguments in step definition files.
+
+
+
+
+
+
+
+
+
+
+Pending:
+1. CypressError: `cy.then()` timed out after waiting `4000ms`.
+Your callback function returned a promise that never resolved.
+Spec: cypress\integration\visualregression\dataTable.js
+2. To exclude .js files in test runner when running cucumber tests add the below code in cypress.json:
+"ignoreTestFiles":["*.js", "*.md"]
+3.  
 
 
 
