@@ -198,8 +198,25 @@ module.exports = (on, config) => {
 
 Cucumber has 3 files: Feature file, Step definition file and Page object
 We can pass parameters in feature file and accept them as arguments in step definition files.
+@focus tag on a scenario will make only the marked scenario to run.
 
+Shared step definition (Kind of test base file in Selenium):
+Create a folder common and common.js file under it.
+Import below statement:
+import { defineStep } from 'cypress-cucumber-preprocessor/steps';
+The keyword like Given, When, Then are actually part of defineStep keyword.
+No write commonly used functions in defineStep section.
+Write scenario in feature file which should be same as defined in step definition file. Run feature file.
 
+Continuous integration:
+It is the process of automatically detecting, pulling, building and automated testing as source code is changed for a product.
+CI is the activity that starts pipeline.
+Continuous delivery refers to the overall chain of processes that automatically gets source code changes and rns them
+through build, test, packaging and related operations to produce a deployable release, largely without human intervention.
+
+Cypress dashboard:
+Free plans provides support for 3 users and 500 test results.
+Dashboard shows test runs and their results with screenshots, videos, failures etc.
 
 
 
