@@ -211,14 +211,43 @@ Write scenario in feature file which should be same as defined in step definitio
 Continuous integration:
 It is the process of automatically detecting, pulling, building and automated testing as source code is changed for a product.
 CI is the activity that starts pipeline.
-Continuous delivery refers to the overall chain of processes that automatically gets source code changes and rns them
+Continuous delivery refers to the overall chain of processes that automatically gets source code changes and runs them
 through build, test, packaging and related operations to produce a deployable release, largely without human intervention.
 
 Cypress dashboard:
 Free plans provides support for 3 users and 500 test results.
 Dashboard shows test runs and their results with screenshots, videos, failures etc.
 
+Running scripts through Jenkins:
+Start tomcat server and open Jenkins
+Create project and configure. 
+Use custom workspace and provide project path.
+Add build step as execute windows command and specify the command you want to run from Jenkins.
+Click Save and apply.
+Now the cypress tests can be run from Jenkins.
 
+Parameterized builds in Jenkins:
+In project configure section click - This project is parameterized
+Add a choice parameter and name it - script
+Add choices as:
+cy:run:chrome
+cy:run:firefox
+cy:run:electron
+In build step section enter the command npm run "$script"
+Now build the project with parameters.
+You will see options to run as 
+cy:run:chrome
+cy:run:firefox
+cy:run:electron
+Select the required one and run the build.
+
+Run jenkins war in cypress:
+Define a script in package.json:
+"start-jenkins-server":"java -jar D:/Tomcat Server/apache-tomcat-8.5.33-windows-x64/apache-tomcat-8.5.33/webapps/jenkins.war -httpPort=8080 --enable-future-java"
+And in powershell execute:
+npm run start-jenkins-server
+Note: If jenkins.war is installed under cypress root folder path need not be specified. Just do:
+"start-jenkins-server":"java -jar jenkins.war -httpPort=8080 --enable-future-java"
 
 
 
