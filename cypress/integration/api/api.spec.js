@@ -19,12 +19,12 @@ describe('First api test', () => {
     it('Api test - Post request', () => {
         cy.request('POST','http://216.10.245.166/Library/Addbook.php',{
             "name": "Learn postman",
-            "isbn": "bcd558",
-            "aisle":"2237",
+            "isbn": "bcd559",
+            "aisle":"2238",
             "author":"John Foe"
         }).then(response => {
             expect(response.body).to.have.property("Msg");
-            expect(response.status).to.eq(200);
+            expect(response.status).to.eq(201);
         })
     })
 })

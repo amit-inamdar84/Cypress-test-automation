@@ -183,6 +183,12 @@ For single spec use the command:
 npx percy exec -- cypress run --spec ./cypress/integration/visualregression/percyVisualTest.js
 Check for builds in percy app for image comparison.
 
+Page objects pattern:
+The idea of page objects patttern is create abstraction over test code, separate application sections into classes, selectors
+and behaviour. If a selector changes the idea is to fxi it in a class and not everywhere in tests. This helps in easy maintenance
+of tests.
+Base page: This will contain code that all classes can use. For ex: wait, pause.
+
 Cucumber BDD:
 npm install cypress-cucumber-preprocessor
 In cypress.json file add this configuration - 
@@ -249,9 +255,55 @@ npm run start-jenkins-server
 Note: If jenkins.war is installed under cypress root folder path need not be specified. Just do:
 "start-jenkins-server":"java -jar jenkins.war -httpPort=8080 --enable-future-java"
 
+Docker:
+Download docker for desktop
+Install docker plugin in visual studio code.
+Create Dockerfile under the root folder of your project.
+In this file write the following code:
+FROM cypress/base:12.19.0
+RUN mkdir /app
+WORKDIR /app
+COPY . /app
+RUN npm install
+RUN $(npm bin)/cypress verify
+RUN ["npm", "run", "cy:run"]
 
+The above code mentions node version, creates a directory app, makes it working directory, copies all source code into that app directory, installs all dependencies mentioned in
+package.json, verifies the installation and run the scripts/commands mentioned in package.json.
+All these actions happen inside the docker container.
+Create .dockerignore file under root folder and add the code: node_modules
+Now start docker engine.
+Run the command docker build -t firstdockerbuild .
+All actions mentioned in docker file will run in container.
 
+Cypress dark theme:
+In console use the command: npm install --save-dev cypress-dark
+In index.js file under support, add require('cypress-dark')
+In cypress.json include "theme": "dark"
+Tests running in browser will not have a dark theme.
 
+Failed logs JSON reporter:
+When a test fails the error is logged to JSON file for debugging purposes.
+In console use the command: npm install --save-dev cypress-failed-log
+In index.js file under support, add require('cypress-failed-log')
+Under plugins folder index.js file, add below code in module.exports:
+on('task',{
+  failed: require('cypress-failed-log/src/failed')
+})
+No runs test to fail. New folder called logs will generate and a json file under it will show the logs.
+
+Best practice:
+1. Use selectors that are resilient. Better to ask developers to add data-* attributes.
+If not use ID's. Last preference is for xpath.
+2. Do not store return values of locators and then perform action. As JS is asynchronous it will not work.
+Ex: const abc = cy.get('something'); abc.click();
+3. It is best not to test 3rd party sites. Just test website that you control.
+4. Do not allow tests to rely on state on other tests. If required then write dependent code in before or beforeEach hooks.
+Or combine multiple tests into one larger test.
+5. Do not write tiny tests with each tests containing one line of code and one assertion. They look like unit tests. E2E tests
+usually have multiple assertions validating multiple elemenents.
+6. Instead of after or afterEach hook use before or beforeEach hooks to clean the state. ie.DB connectt/reset, test data etc.
+7. Do not put unnecessary waits. Cypress automatically waits in many cases.
 
 
 Pending:
@@ -260,8 +312,12 @@ Your callback function returned a promise that never resolved.
 Spec: cypress\integration\visualregression\dataTable.js
 2. To exclude .js files in test runner when running cucumber tests add the below code in cypress.json:
 "ignoreTestFiles":["*.js", "*.md"]
-3.  
-
+3. Check example scripts from Cypress team when new cypress project is created. (cypress/integration/examples)
+4. ///<reference types = "Cypress" /> - This will suggest cypress commands while typing.  
+5. Alt+Shift+F for text formatting in visual studio code.
+6. Data driven testing with Cypress and  organizing test data.
+7. Best practices for page object pattern in cypress.
+8. Using random test data in test scripts.
 
 
  
