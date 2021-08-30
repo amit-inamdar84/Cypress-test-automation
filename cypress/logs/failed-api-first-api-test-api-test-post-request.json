@@ -1,0 +1,12 @@
+{
+  "specName": "api.spec.js",
+  "title": "Api test - Post request",
+  "suiteName": "First api test",
+  "testName": "First api test Api test - Post request",
+  "testError": "expected 200 to equal 201",
+  "testCommands": [
+    "request ",
+    "assert expected **{ Object (Msg, ID) }** to have property **Msg**",
+    "assert expected **200** to equal **201**"
+  ]
+}

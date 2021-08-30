@@ -12,5 +12,6 @@
   "responseTimeout": 30000,
   "video": false,
   "failOnStatusCode": false,
-  "projectId": "ugcnmw"
+  "projectId": "ugcnmw",
+  "theme": "dark"
 }

@@ -7,3 +7,6 @@ import '@percy/cypress';
 // require('./commands')
 
 require('cypress-xpath')
+require('cypress-dark')
+require('cypress-failed-log')
+

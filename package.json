@@ -12,7 +12,7 @@
     "cy:run:chrome": "cypress run --browser chrome",
     "cy:run:firefox": "cypress run --browser firefox",
     "cy:run:electron": "cypress run --browser electron",
-    "start-jenkins-server":"java -jar D:/Tomcat Server/apache-tomcat-8.5.33-windows-x64/apache-tomcat-8.5.33/webapps/jenkins.war -httpPort=8080 --enable-future-java"
+    "start-jenkins-server": "java -jar D:/Tomcat Server/apache-tomcat-8.5.33-windows-x64/apache-tomcat-8.5.33/webapps/jenkins.war -httpPort=8080 --enable-future-java"
   },
   "repository": {
     "type": "git",
@@ -40,5 +40,9 @@
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
+  },
+  "devDependencies": {
+    "cypress-dark": "^1.7.14",
+    "cypress-failed-log": "^2.9.1"
   }
 }

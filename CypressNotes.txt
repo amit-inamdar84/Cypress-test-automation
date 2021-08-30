@@ -43,6 +43,7 @@ Open terminal and execute npm init - This will create package.json file
 Enter package.json details in command prompt.
 Package.json file will be created.
 In terminal install cypress using the command: npm install cypress
+Cypress path: C:\Users\AMIT\AppData\Local\Cypress\Cache\7.7.0\Cypress
 
 Prettier setup: (prettier.io)
 npm install prettier
@@ -80,6 +81,8 @@ Add these two commands in package.json:
    "cy:open": "cypress open",
     "cy:run" : "cypress run"
 
+Links: https://docs.cypress.io/api/table-of-contents
+
 Cypress folders purpose:
 fixtures: To store test data.
 integration: To write test scripts
@@ -112,6 +115,14 @@ Tip:
 cy.url().should('include', 'Test') - include can be used with url or title.
 cy.get('#testid').should('contain', 'Text') - Here instead of include contain should be used. If we use include will get below error:
 Timed out retrying after 4000ms: object tested must be an array, a map, an object, a set, a string, or a weakset, but object given
+
+Screenshots:
+To take a manual screenshot you can use the cy.screenshot() command.
+Additionally, Cypress will automatically capture screenshots when a failure happens during cypress run. 
+Screenshots on failure are not automatically taken during cypress open.
+Capturing of screenshots when a test fails can be turned off entirely by setting screenshotOnRunFailure to false
+Cypress clears any existing screenshots before cypress run. 
+If you do not want to clear your screenshots folder before a run, you can set trashAssetsBeforeRuns to false.
 
 
 Visual testing is the automated process of detecting and reviewing visual UI changes.
@@ -202,6 +213,11 @@ module.exports = (on, config) => {
   on('file:preprocessor', cucumber())
 }
 
+Add below code in package.json:
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
+  },
+
 Cucumber has 3 files: Feature file, Step definition file and Page object
 We can pass parameters in feature file and accept them as arguments in step definition files.
 @focus tag on a scenario will make only the marked scenario to run.
@@ -213,6 +229,8 @@ import { defineStep } from 'cypress-cucumber-preprocessor/steps';
 The keyword like Given, When, Then are actually part of defineStep keyword.
 No write commonly used functions in defineStep section.
 Write scenario in feature file which should be same as defined in step definition file. Run feature file.
+Running only feature files under a folder:
+npx cypress run --record --key af640675-1aa7-4093-8419-5a0969a835ce --spec cypress/integration/cucumber-tests/*.feature
 
 Continuous integration:
 It is the process of automatically detecting, pulling, building and automated testing as source code is changed for a product.
@@ -221,6 +239,12 @@ Continuous delivery refers to the overall chain of processes that automatically 
 through build, test, packaging and related operations to produce a deployable release, largely without human intervention.
 
 Cypress dashboard:
+Open cypress test runner and go to Runs tab. Link your log in to Cypress and generate a project ID.
+Add this project ID in cypress.json file.
+Add the script : cypress run --record --key b426714c-90ca-4156-825b-b4f9c94f2b89
+For single spec: npx cypress run --record --key b426714c-90ca-4156-825b-b4f9c94f2b89 --spec ./cypress/integration/e2e/addNewPayee.js
+Record Keys allow you to record test results, screenshots and videos in Cypress. Record key is mandatory to see local test runs 
+results in dashboard. If run in CI tool it is automatic.
 Free plans provides support for 3 users and 500 test results.
 Dashboard shows test runs and their results with screenshots, videos, failures etc.
 
@@ -239,7 +263,7 @@ Add choices as:
 cy:run:chrome
 cy:run:firefox
 cy:run:electron
-In build step section enter the command npm run "$script"
+In build step section enter the command npm run %script% (For mac use - npm run "$script")
 Now build the project with parameters.
 You will see options to run as 
 cy:run:chrome
@@ -305,6 +329,56 @@ usually have multiple assertions validating multiple elemenents.
 6. Instead of after or afterEach hook use before or beforeEach hooks to clean the state. ie.DB connectt/reset, test data etc.
 7. Do not put unnecessary waits. Cypress automatically waits in many cases.
 
+Mochawesome report:
+https://dev.to/bushraalam/using-mochawesome-reporter-with-cypress-54pf
+Cypress is built on top of Mocha and so it gets the mocha's bdd syntax, hooks and mocha reports.
+These reports are good but not as awesome as Mochawesome Reporter.
+Mochawesome reporter is a custom reporter which generates a standalone HTML/CSS report to help visualize your test runs.
+It has simple, clean, and modern design. 
+The report has filters to display only the tests you want and shows stack trace for failed tests.
+Starting Cypress v.3.0.0 Cypress executes each spec in isolation and hence a separate test report is generated for each spec. 
+This is a problem because we need one single report for the complete run (which include multiple specs).
+Solution: mochawesome-merge can be used to merge these reports and then generate one HTML report for all your cypress tests.
+Following dependencies are needed:
+cypress-multi-reporters: Generate multiple mocha reports in a single mocha execution.
+mochawesome : Mochawesome is a custom reporter for use with the Javascript testing framework, mocha.
+mochawesome-merge: Merge several Mochawesome JSON reports.
+mochawesome-report-generator (marge): marge (moch*awesome-report-ge*nerator) is the counterpart to mochawesome, a custom reporter
+for use with the Javascript testing framework, mocha. 
+Marge takes the JSON output from mochawesome and generates a full fledged HTML/CSS report that helps visualize your test suites.
+Add reporter settings in cypress.json:
+"reporter": "cypress-multi-reporters",
+    "reporterOptions": {
+        "reporterEnabled": "mochawesome",
+        "mochawesomeReporterOptions": {
+            "reportDir": "cypress/reports/mocha",
+            "quite": true,
+            "overwrite": false,
+            "html": false,
+            "json": true
+        }
+    }
+Add scripts in package.json file:
+"scripts": {
+    "clean:reports": "rmdir /S /Q cypress\\reports && mkdir cypress\\reports 
+         && mkdir cypress\\reports\\mochareports",
+    "pretest": "npm run clean:reports",
+    "scripts": "cypress run",
+    "combine-reports": "mochawesome-merge
+         cypress/reports/mocha/*.json > cypress/reports/mochareports/report.json",
+    "generate-report": "marge cypress/reports/mochareports/
+         report.json -f report -o cypress/reports/mochareports",
+    "posttest": "npm run combine-reports && npm run generate-report",
+    "test" : "npm run scripts || npm run posttest"
+  }
+pretest script would create the report folders and clear them if they already exist
+test script would do the following:
+a. run your test suite
+b. create 'mocha' folder under 'cypress/reports'
+c. create .json files (one for each spec executed) in the 'mocha' folder
+posttest script would combine all the .json files present in 'cypress/reports/mocha' folder and place the combined file
+'report.json' in 'cypress/reports/mochareports' and create a beautiful html report.
+For implementation refer the repo: https://github.com/amit-inamdar84/Cypress-POC
 
 Pending:
 1. CypressError: `cy.then()` timed out after waiting `4000ms`.
