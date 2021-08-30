@@ -1,0 +1,20 @@
+{
+  "specName": "interceptResponse.spec.js",
+  "title": "My FirstTest case",
+  "suiteName": "My First Test Suite",
+  "testName": "My First Test Suite My FirstTest case",
+  "testError": "Timed out retrying after 5000ms: expected '<p>' to have text 'Sorry we have only one book available', but the text was 'Oops only 1 Book available'",
+  "testCommands": [
+    "visit https://rahulshettyacademy.com/angularAppdemo/",
+    "get button[class='btn btn-primary']",
+    "click ",
+    "new url https://rahulshettyacademy.com/angularAppdemo/library",
+    "xhr  GET https://rahulshettyacademy.com/Library/GetBook.php?AuthorName=shetty",
+    "xhr  GET https://rahulshettyacademy.com/Library/GetBook.php?AuthorName=shetty",
+    "wait @bookretrievals",
+    "get tr",
+    "assert expected **[ <tr>, 1 more... ]** to have a length of **2**",
+    "get p",
+    "assert expected **<p>** to have text **Sorry we have only one book available**, but the text was **Oops only 1 Book available**"
+  ]
+}
